@@ -2,12 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.animation import PillowWriter
+
 # Plot matched-filtered signal before squint
 def plot_matched_filtered_signal(rs, rc, c, dt, nn, v):
     # range-compressed signal across the synthetic aperture (v axis):
     # Aperture v — the cross-range path of the platform.
     # Fast-time t — approximates range.
-    # Bright diagonal lines: Return signals from reflectors at different slant ranges that shift across the aperture due to motion → these are correct and expected pre-focusing effects
+    # Bright diagonal lines: Return signals from reflectors at different slant ranges 
+    # that shift across the aperture due to motion → these are correct and expected pre-focusing effects
     tm = (2 * rc / c) + dt * (np.arange(nn) - nn / 2)
     plt.figure()
     plt.imshow(np.abs(rs), extent=[v[0], v[-1], tm[0], tm[-1]], aspect='auto', cmap='jet', origin='lower')
@@ -18,7 +20,6 @@ def plot_matched_filtered_signal(rs, rc, c, dt, nn, v):
     plt.ylabel("Fast-Time (s) → Slant Range") 
     plt.colorbar(label='Amplitude')
     plt.savefig('plots/matched_filtered_signal.png', dpi=300)
-
 
 # Plot range walk (single aperture column)
 def plot_range_walk(rs, t, mm):
@@ -42,12 +43,10 @@ def animate_range_profiles(rs, t, v, mm):
     ax.set_xlabel("Fast-Time (s) → Slant Range")
     ax.set_ylabel("Echo Amplitude")
     ax.set_title("Range Profile Across Aperture Positions")
-
     def update(frame):
         line.set_data(t, rs[:, frame])
         ax.set_title(f'Aperture Index: {frame}  |  v = {v[frame]:.2f} m')
-        return line,
-
+        return line
     ani = FuncAnimation(fig, update, frames=range(mm), blit=True)
     ani.save("plots/range_profile_animation.gif", writer=PillowWriter(fps=15))
 

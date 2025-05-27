@@ -70,7 +70,6 @@ pip install numpy matplotlib pandas
 ```
 
 Additional (optional for animations):
-- `ffmpeg` (for `.mp4` animations) or
 - `Pillow` (for `.gif`)
 
 ---
