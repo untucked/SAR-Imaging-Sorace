@@ -80,9 +80,6 @@ Additional (optional for animations):
 ```bash
 python NoisySARFFTPolFmt.py
 ```
-
-If `config.json` is not found, it will prompt you interactively.
-
 ---
 
 ## 🖼️ Sample Output
@@ -96,7 +93,7 @@ If `config.json` is not found, it will prompt you interactively.
 ---
 
 ## GIT - CLONE
-----------------------------
+
 ``` bash
 git clone https://github.com/untucked/SAR-Imaging-Sorace.git
 ```
