@@ -164,19 +164,6 @@ def main():
     animate_range_profiles(rs, t, v, mm)
     # 3D surface plot
     surface_plot_3d(rs, t, v)
-    # Peak amplitude and estimated range for center aperture
-    mid_col = rs[:, mm // 2]
-    peak_idx = np.argmax(mid_col)
-    peak_time = t[peak_idx]
-    estimated_range = 3e8 * peak_time / 2  # simple c*t/2 formula
-
-    peak_df = pd.DataFrame({
-        "Peak Amplitude": [mid_col[peak_idx]],
-        "Peak Time (s)": [peak_time],
-        "Estimated Range (m)": [estimated_range]
-    })
-    print(peak_df.to_string(index=False))
-    peak_df.to_csv('plots/peak_estimation.csv', index=False)
 
     # Squint correction
     kf = kd * dm * (np.arange(mm) - mm/2)

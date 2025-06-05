@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.animation import PillowWriter
+import pandas as pd
 
 # Plot matched-filtered signal before squint
 def plot_matched_filtered_signal(rs, rc, c, dt, nn, v):
@@ -46,9 +47,28 @@ def animate_range_profiles(rs, t, v, mm):
     def update(frame):
         line.set_data(t, rs[:, frame])
         ax.set_title(f'Aperture Index: {frame}  |  v = {v[frame]:.2f} m')
-        return line
+        return [line]
     ani = FuncAnimation(fig, update, frames=range(mm), blit=True)
     ani.save("plots/range_profile_animation.gif", writer=PillowWriter(fps=15))
+
+    # Peak amplitude and estimated range at different frames
+    peak_amps, peak_times , estimated_range=[], [], []
+    for frame in range(rs.shape[1]):
+        # mid_col = rs[:, mm // 2]
+        m_col = rs[:,frame]
+        peak_idx = np.argmax(m_col)
+        peak_time = t[peak_idx]
+        peak_amps .append( m_col[peak_idx] )
+        peak_times.append(peak_time*1e6)
+        estimated_range .append(3e8 * peak_time / 2)  # simple c*t/2 formula
+
+    peak_df = pd.DataFrame({
+        "Peak Amplitude (dB)": 10*np.log10(np.abs(peak_amps)),
+        "Peak Time (us)": peak_times,
+        "Estimated Range (m)": estimated_range
+    })
+    print(peak_df.to_string(index=False))
+    peak_df.to_csv('plots/peak_estimation_frames.csv', index=False)
 
 # 3D surface plot
 def surface_plot_3d(rs, t, v):
