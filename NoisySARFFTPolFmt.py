@@ -5,7 +5,7 @@ import os
 import pandas as pd
 from numpy import pi, sqrt, exp, sin, cos
 import sys
-
+import time
 # local
 from support import dftx, dfty, idftx, idfty, intrplt
 from plotting import plot_matched_filtered_signal, plot_range_walk, animate_range_profiles, surface_plot_3d, target_layout, drwchrt
@@ -50,6 +50,7 @@ def get_config():
 # ========================
 
 def main():
+    start_time = time.time()
     os.makedirs('plots', exist_ok=True)
     cfg = get_config()
     fc   = cfg['fc']   # Center frequency of the chirped pulse (Hz)
@@ -126,7 +127,10 @@ def main():
 
     for k in range(ntr):
         rg = 2 * np.sqrt(px[k,0]**2 + (px[k,1] - v)**2) / c
+        # slow solution: 
         tt = np.outer(t, np.ones(mm)) - rg[np.newaxis, :]
+        # outer method:
+        # tt = np.outer(t, np.ones(mm)) - np.outer(np.ones((1,nn)), rg)
         tx = pi2 * (fl + ap * tt) * tt
         t0 = (tt >= 0) & (tt <= tu)
         rr += fx[k] * np.exp(ci * tx) * t0
@@ -182,7 +186,10 @@ def main():
     # MATLAB: ks = 4 * krr(:) * ones(1,mm) - ones(nn,1) * kvv;
     # ks = 4 * np.outer(krr, np.ones(mm)) - np.outer(np.ones(nnn), kvv)
     # ks = np.maximum(ks, 0)
+    # slow solution: 
     ks = 4 * krr.reshape(-1, 1) - kvv.reshape(1, -1)
+    # outer method:
+    # ks = 4 * np.outer(krr, np.ones((1, mm))) - np.outer(np.ones((nn, 1)), kvv)
     ks = ks * (ks > 0) # Element-wise multiplication for boolean masking
     ku = np.sqrt(ks)
 
@@ -190,7 +197,10 @@ def main():
     # MATLAB: tx = ku * uc + ones(nn,1) * kv * vc;
     tx = ku * uc + np.ones((nn, 1)) * (kv * vc)
     # MATLAB: tx = tx - 2 * (kr(:) * ones(1,mm)) * rc;
+    # slow solution: 
     tx = tx - 2 * (kr.reshape(-1, 1) * np.ones((1, mm))) * rc
+    # outer method:
+    # tx = tx - 2 * np.outer(kr, np.ones((1, mm))) * rc
     cn = np.exp(ci * tx)  # Filter signal
     rr *= cn
 
@@ -213,6 +223,9 @@ def main():
     # Cross range limits
     v_y = [vc - dlv, vc + dlv]
     drwchrt(rr, u_x, v_y, overlay_targets=px)
+    end_time = time.time()
+    original_method_time = end_time - start_time
+    print(f"Time elapsed: {original_method_time:.6f} seconds")
 
 if __name__ == '__main__':
     main()
