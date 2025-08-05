@@ -14,6 +14,7 @@ It includes:
 - Squint correction
 - Full polar formatting and interpolation
 - Visualization and animation tools
+- ✅ Interactive Streamlit UI for placing targets and setting reflectivities
 
 ---
 
@@ -22,6 +23,7 @@ It includes:
 - Visualize signal evolution before and after matched filtering
 - Demonstrate cross-range motion and synthetic aperture principles
 - Generate plots, GIF animations, and final image output
+- Allow user-defined scenario via a visual web interface
 
 ---
 
@@ -41,64 +43,79 @@ It includes:
 
 ## ✨ Features
 - ✅ Supports both noise-free and noisy SAR simulation
+- ✅ Streamlit UI with dynamic target placement and reflectivity controls
 - 📈 Visual output at every key stage
 - 🧭 Range walk visualization & squint correction
 - 🎞️ Animated GIF of range profile sweep
 - 🖼️ 3D surface plot of matched-filtered matrix
-- 🗃️ Configurable via `config.json` (or falls back to `input()`)
+- 🗃️ Configurable via `config.json` or via Streamlit UI
 
 ---
 
 ## 📁 Project Structure
 ```
 SAR_Imaging/
-├── NoisySARFFTPolFmt.py       # Main script
-├── support.py                 # FFT, interpolation, helpers
-├── plotting.py                # Modular plotting logic
-├── config.json                # Optional user-defined scenario
-├── plots/                     # Output images and GIFs
-└── README.md                  # This file
+├── NoisySARFFTPolFmt.py         # Main script (headless run)
+├── sar_streamlit_app.py         # Streamlit web interface
+├── support.py                   # FFT, interpolation, helpers
+├── plotting.py                  # Modular plotting logic
+├── config.json                  # Optional user-defined scenario
+├── plots/                       # Output images and GIFs
+├── requirements.txt             # Dependency list
+└── README.md                    # This file
 ```
 
 ---
 
 ## 🧩 Dependencies
+Install via the provided `requirements.txt`:
 
-Install with:
 ```bash
-pip install numpy matplotlib pandas
+pip install -r requirements.txt
 ```
 
-Additional (optional for animations):
-- `Pillow` (for `.gif`)
+Contents of `requirements.txt`:
+```
+numpy
+matplotlib
+pandas
+streamlit==1.34.0
+streamlit-drawable-canvas
+pillow
+```
 
 ---
 
 ## 🧪 Run It
 
+### 🧵 Script Mode
 ```bash
 python NoisySARFFTPolFmt.py
 ```
+
+### 🌐 Streamlit App Mode
+```bash
+streamlit run sar_streamlit_app.py
+```
+
 ---
 
 ## 🖼️ Sample Output
 
 - ✅ `plots/targets_layout.png`: Ground truth target positions
 - ✅ `plots/matched_filtered_signal.png`: Compressed signal vs aperture
-- ✅ `plots/range_profile_animation.gif`: Range walk over time
+- ✅ `plots/range_profile_animation.gif`: Range walk over time (animated)
 - ✅ `plots/matched_filtered_surface.png`: 3D matched filter matrix
 - ✅ `plots/sar_output.png`: Final SAR image
 
 ---
 
 ## GIT - CLONE
-
-``` bash
+```bash
 git clone https://github.com/untucked/SAR-Imaging-Sorace.git
 ```
 
 ## 🔧 Git Setup
-
 ```bash
 git init
 git add .
@@ -107,4 +124,3 @@ git branch -M main
 git remote add origin https://github.com/untucked/SAR-Imaging-Sorace.git
 git push -u origin main
 ```
-
